@@ -1,6 +1,9 @@
 import os
 import logging
 
+from collections import defaultdict
+from concurrent.futures import ThreadPoolExecutor, as_completed
+
 from gemmi import cif
 
 from ccd_maintenance.models import get_table, cast_type, metadata_obj
@@ -72,34 +75,53 @@ class ChemCompReader:
 
 
 class DataLoader:
-    def __init__(self, config, engine, ccd_root):
+    def __init__(self, config, engine, ccd_root, batch_size=10):
         self.config = config
         self.engine = engine
         self.ccd_root = ccd_root
+        self.batch_size = batch_size
 
-    def _read_data(self, cc_file):
-        reader = ChemCompReader(config=self.config)
-        return reader.read(cc_file)
-
-    def _load_multi(self, data):
-        pass
-
-    def load(self):
+    def _setup_schema(self):
         with self.engine.connect() as conn:
             with conn.begin():
                 metadata_obj.drop_all(conn)
                 metadata_obj.create_all(conn)
 
-                reader = ChemCompReader(config=self.config)
+    def _read_data(self, cc_file):
+        reader = ChemCompReader(config=self.config)
+        return reader.read(cc_file)
 
-                for cc_file in lookup_ccd_fs(self.ccd_root):
-                    cc_data = reader.read(cc_file)
+    def _load_multi(self, batch_data):
+        grouped_data = defaultdict(list)
+        for entry in batch_data:
+            for category, data in entry.items():
+                grouped_data[category].extend(data)
 
-                    for category, data in cc_data.items():
-                        table = get_table(category.lstrip("_"))
-                        if table is None:
-                            logger.error(f"Model not found for {category}")
-                            continue
+        with self.engine.connect() as conn:
+            with conn.begin():                
+                for category, data in grouped_data.items():
+                    table = get_table(category.lstrip("_"))
+                    if table is None:
+                        continue
 
-                        conn.execute(table.insert(), data)
-                        logger.info(f"Data loaded for {category}")
+                    conn.execute(table.insert(), data)
+
+    def load(self):
+        self._setup_schema()
+
+        cc_data_batch = []
+
+        with ThreadPoolExecutor() as executor:
+            futures = [executor.submit(self._read_data, cc_file) for cc_file in lookup_ccd_fs(self.ccd_root)]
+
+            for future in as_completed(futures):
+                cc_data = future.result()
+                cc_data_batch.append(cc_data)
+
+                if len(cc_data_batch) >= self.batch_size:
+                    # self._load_multi(cc_data_batch)
+                    cc_data_batch.clear()
+            
+            if cc_data_batch:
+                self._load_multi(cc_data_batch)
+                cc_data_batch.clear()
