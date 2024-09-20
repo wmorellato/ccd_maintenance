@@ -1,4 +1,6 @@
-from sqlalchemy import MetaData, Table, Column, Integer, String, Float, DateTime
+from datetime import datetime, date
+
+from sqlalchemy import MetaData, Table, Column, Integer, String, Float, Date, DateTime, Boolean
 
 
 metadata_obj = MetaData()
@@ -245,8 +247,20 @@ def get_table(table_name):
     return metadata_obj.tables.get(table_name)
 
 
-def is_number(table_obj: Table, tag: str):
-    if isinstance(table_obj.c[tag].type, (Float, Integer)):
-        return True
-    
-    return False
+def cast_type(table_obj: Table, tag: str, value):
+    if isinstance(table_obj.c[tag].type, Float):
+        return float(value)
+
+    if isinstance(table_obj.c[tag].type, Integer):
+        return int(value)
+
+    if isinstance(table_obj.c[tag].type, DateTime):
+        return datetime.strptime(value, "%Y-%m-%d")
+
+    if isinstance(table_obj.c[tag].type, Date):
+        return date.fromisoformat(value)
+
+    if isinstance(table_obj.c[tag].type, Boolean):
+        return bool(value)
+
+    return value

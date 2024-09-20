@@ -1,0 +1,41 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ccd_maintenance"
+version = "0.1.0"
+description = "A module for loading CCD data into the database."
+authors = [
+    { name = "Weslley Morellato Bueno", email = "wbueno@ebi.ac.uk" }
+]
+dependencies = [
+    "sqlalchemy",
+    "pytest",
+    "black",
+]
+
+[tool.black]
+line-length = 88
+target-version = ['py38']
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra -q"
+testpaths = [
+    "tests",
+]
+markers = [
+    "integration: tests involving the database"
+]
+
+[tool.setuptools]
+packages = ["ccd_maintenance"]
+
+[tool.setuptools.package_data]
+"ccd_maintenance" = ["*.cif"]
+
+[tool.setuptools.entry_points]
+console_scripts = [
+    "data_loader=ccd_maintenance:main",
+]
