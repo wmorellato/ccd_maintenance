@@ -44,6 +44,9 @@ class ChemCompReader:
                     logger.debug(f"Ignoring item {i} in {category}")
                     continue
 
+                if "Component_ID" in sql_table.c and self._cc_id:
+                    row["Component_ID"] = self._cc_id
+
                 row[i] = cast_type(sql_table, i, cif.as_string(r[i]))
             rows.append(row)
         
@@ -61,7 +64,8 @@ class ChemCompReader:
 
         if not block:
             raise ValueError(f"No data block found in the file: {file_path}")
-        
+
+        self._cc_id = block.name
         for cat in self.config.chem_comp_categories:
             table = block.find_mmcif_category(cat)
 
@@ -111,7 +115,7 @@ class DataLoader:
 
         cc_data_batch = []
 
-        with ThreadPoolExecutor() as executor:
+        with ThreadPoolExecutor(max_workers=self.config.num_threads) as executor:
             futures = [executor.submit(self._read_data, cc_file) for cc_file in lookup_ccd_fs(self.ccd_root)]
 
             for future in as_completed(futures):

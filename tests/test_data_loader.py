@@ -73,7 +73,7 @@ def test_parse_cc_file():
 
 @pytest.fixture
 def db_engine():
-    engine = create_engine("sqlite+pysqlite:///compv4.sqlite", echo=True)
+    engine = create_engine("sqlite+pysqlite:///:memory:")
     yield engine
     engine.dispose()
 
