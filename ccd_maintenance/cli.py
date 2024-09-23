@@ -1,5 +1,10 @@
+import os
 import click
 
+from ccd_maintenance.config import Config
+from ccd_maintenance.data_loader import DataLoader
+
+from sqlalchemy import create_engine
 from wwpdb.utils.config.ConfigInfo import ConfigInfo
 from wwpdb.utils.config.ConfigInfoApp import ConfigInfoAppCc
 
@@ -18,8 +23,12 @@ def get_site_config_db_url():
 
 
 def get_ccd_root():
+    config = ConfigInfo()
     cc_config = ConfigInfoAppCc()
-    return cc_config.get_site_refdata_top_cvs_sb_path()
+    components_root = cc_config.get_site_refdata_top_cvs_sb_path()
+    ligand_proj = config.get("SITE_REFDATA_PROJ_NAME_CC")
+
+    return os.path.join(components_root, ligand_proj)
 
 
 @click.group()
@@ -36,9 +45,15 @@ def load(db_url, ccd_root):
         db_url = get_site_config_db_url()
 
     if not ccd_root:
-        ccd_root = ConfigInfo().get("SITE_REFDATA_CCDCOMPONENT_DIR")
+        ccd_root = get_ccd_root()
 
     click.echo(f"Loading data with db_url: {db_url} and ccd_root: {ccd_root}")
+
+    config = Config()
+    engine = create_engine(db_url)
+    loader = DataLoader(config=config, engine=engine, ccd_root=ccd_root)
+    loader.load()
+
 
 cli.add_command(load)
 
