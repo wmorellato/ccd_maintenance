@@ -240,7 +240,7 @@ pdbx_chem_comp_descriptor = Table("pdbx_chem_comp_descriptor",
     metadata_obj,
     Column("Component_ID", String(10), primary_key=True),
     Column("comp_id", String(10), primary_key=True),
-    Column("descriptor", String(255)),
+    Column("descriptor", String(2048)),
     Column("type", String(50), primary_key=True),
     Column("program", String(128), primary_key=True),
     Column("program_version", String(128), primary_key=True),
@@ -305,6 +305,9 @@ def get_table(table_name):
 
 
 def cast_type(table_obj: Table, tag: str, value):
+    if not isinstance(table_obj.c[tag].type, String) and value == "":
+        return None
+
     if isinstance(table_obj.c[tag].type, Float):
         return float(value)
 

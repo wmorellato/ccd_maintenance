@@ -1,4 +1,5 @@
 import os
+import queue
 import logging
 
 from collections import defaultdict
@@ -93,7 +94,12 @@ class DataLoader:
 
     def _read_data(self, cc_file):
         reader = ChemCompReader(config=self.config)
-        return reader.read(cc_file)
+
+        try:
+            return reader.read(cc_file)
+        except Exception as e:
+            logger.error(f"Error reading file {cc_file}: {e}")
+            return {}
 
     def _load_multi(self, batch_data):
         grouped_data = defaultdict(list)
@@ -110,22 +116,47 @@ class DataLoader:
 
                     conn.execute(table.insert(), data)
 
+    def _data_builder_task(self, worker, file_queue):
+        db_batch = []
+
+        while True:
+            try:
+                cc_file = file_queue.get()
+                file_queue.task_done()
+            except file_queue.Empty:
+                break
+
+            if cc_file is None:
+                break
+
+            data = self._read_data(cc_file)
+            if data:
+                db_batch.append(data)
+
+            if len(db_batch) >= self.batch_size:
+                try:
+                    self._load_multi(db_batch)
+                    logger.info(f"Batch loaded {len(db_batch)} for worker {worker} into the database")
+                except Exception as e:
+                    logger.error(f"Error loading data for worker {worker}: {e}")
+                finally:
+                    db_batch.clear()
+
     def load(self):
+        file_queue = queue.Queue(maxsize=100)
         self._setup_schema()
 
-        cc_data_batch = []
-
         with ThreadPoolExecutor(max_workers=self.config.num_threads) as executor:
-            futures = [executor.submit(self._read_data, cc_file) for cc_file in lookup_ccd_fs(self.ccd_root)]
+            futures = [executor.submit(self._data_builder_task, worker, file_queue) for worker in range(self.config.num_threads)]
 
-            for future in as_completed(futures):
-                cc_data = future.result()
-                cc_data_batch.append(cc_data)
+            for cc_file in lookup_ccd_fs(self.ccd_root):
+                file_queue.put(cc_file)
 
-                if len(cc_data_batch) >= self.batch_size:
-                    # self._load_multi(cc_data_batch)
-                    cc_data_batch.clear()
-            
-            if cc_data_batch:
-                self._load_multi(cc_data_batch)
-                cc_data_batch.clear()
+            file_queue.join()
+
+            # stop signal for the workers
+            for _ in range(self.config.num_threads):
+                file_queue.put(None)
+
+            for f in as_completed(futures):
+                f.result()
