@@ -10,6 +10,7 @@ from gemmi import cif
 from ccd_maintenance.models import get_table, cast_type, metadata_obj
 
 logger = logging.getLogger(__name__)
+logger.addHandler(logging.FileHandler("ccd_maintenance.log"))
 
 
 def lookup_ccd_fs(root_dir):
@@ -57,7 +58,7 @@ class ChemCompReader:
         if not os.path.exists(file_path):
             raise FileNotFoundError(f"File not found: {file_path}")
 
-        logger.info(f"Reading file: {file_path}")
+        logger.debug(f"Reading file: {file_path}")
 
         cc_data = {}
         doc = cif.read(file_path)
@@ -108,7 +109,9 @@ class DataLoader:
                 grouped_data[category].extend(data)
 
         with self.engine.connect() as conn:
-            with conn.begin():                
+            with conn.begin():
+                logger.info("Loading batch into the database")
+
                 for category, data in grouped_data.items():
                     table = get_table(category.lstrip("_"))
                     if table is None:
@@ -136,14 +139,13 @@ class DataLoader:
             if len(db_batch) >= self.batch_size:
                 try:
                     self._load_multi(db_batch)
-                    logger.info(f"Batch loaded {len(db_batch)} for worker {worker} into the database")
                 except Exception as e:
-                    logger.error(f"Error loading data for worker {worker}: {e}")
+                    logger.error(f"Error loading data for worker {worker}: {str(e)[:255]}")
                 finally:
                     db_batch.clear()
 
     def load(self):
-        file_queue = queue.Queue(maxsize=100)
+        file_queue = queue.Queue(maxsize=200)
         self._setup_schema()
 
         with ThreadPoolExecutor(max_workers=self.config.num_threads) as executor:

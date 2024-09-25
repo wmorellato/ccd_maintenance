@@ -1,5 +1,8 @@
 import os
+import re
+import time
 import click
+import logging
 
 from ccd_maintenance.config import Config
 from ccd_maintenance.data_loader import DataLoader
@@ -7,6 +10,8 @@ from ccd_maintenance.data_loader import DataLoader
 from sqlalchemy import create_engine
 from wwpdb.utils.config.ConfigInfo import ConfigInfo
 from wwpdb.utils.config.ConfigInfoApp import ConfigInfoAppCc
+
+logging.basicConfig(level=logging.INFO)
 
 
 def get_site_config_db_url():
@@ -47,12 +52,15 @@ def load(db_url, ccd_root):
     if not ccd_root:
         ccd_root = get_ccd_root()
 
-    click.echo(f"Loading data with db_url: {db_url} and ccd_root: {ccd_root}")
+    click.echo(f"Loading CCD data from {ccd_root} into {re.sub(r':.*@', ':****@', db_url)}")
 
     config = Config()
     engine = create_engine(db_url)
     loader = DataLoader(config=config, engine=engine, ccd_root=ccd_root)
+    start = time.time()
     loader.load()
+    end = time.time()
+    click.echo(f"Data loaded in {end - start:.2f} seconds")
 
 
 cli.add_command(load)

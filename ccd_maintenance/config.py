@@ -23,4 +23,4 @@ class Config:
             "_pdbx_chem_comp_related",
             "_pdbx_chem_comp_atom_related",
         ]
-        self.num_threads = 10
+        self.num_threads = 4
