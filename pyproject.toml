@@ -1,0 +1,30 @@
+[tool.poetry]
+name = "ccd_maintenance"
+version = "0.1.0"
+description = "A module for loading CCD data into the database."
+authors = ["Weslley Morellato Bueno <wbueno@ebi.ac.uk>"]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+sqlalchemy = "^1.4"
+pytest = "^6.0"
+
+[tool.poetry.dev-dependencies]
+pytest = "^6.0"
+
+[tool.poetry.scripts]
+ccd-tasks = "ccd_maintenance.cli:cli"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra -q"
+testpaths = [
+    "tests",
+]
+markers = [
+    "integration: tests involving the database"
+]

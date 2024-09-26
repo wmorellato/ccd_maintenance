@@ -1,0 +1,90 @@
+data_ABC
+
+_chem_comp.id                                   ABC
+_chem_comp.name                                 "MODIFIED ACARBOSE HEXASACCHARIDE"
+_chem_comp.type                                 SACCHARIDE
+_chem_comp.pdbx_type                            ATOMS
+_chem_comp.formula                              "C37 H63 N O26"
+_chem_comp.mon_nstd_parent_comp_id              ?
+_chem_comp.pdbx_synonyms                        ?
+_chem_comp.pdbx_formal_charge                   0
+_chem_comp.pdbx_initial_date                    1999-07-08
+_chem_comp.pdbx_modified_date                   2011-06-04
+_chem_comp.pdbx_ambiguous_flag                  N
+_chem_comp.pdbx_release_status                  REL
+_chem_comp.pdbx_replaced_by                     ?
+_chem_comp.pdbx_replaces                        ?
+_chem_comp.formula_weight                       937.887
+_chem_comp.one_letter_code                      ?
+_chem_comp.three_letter_code                    ABC
+_chem_comp.pdbx_model_coordinates_details       ?
+_chem_comp.pdbx_model_coordinates_missing_flag  N
+_chem_comp.pdbx_ideal_coordinates_details       ?
+_chem_comp.pdbx_ideal_coordinates_missing_flag  N
+_chem_comp.pdbx_model_coordinates_db_code       7TAA
+_chem_comp.pdbx_subcomponent_list               ?
+_chem_comp.pdbx_processing_site                 RCSB
+#
+loop_
+_chem_comp_atom.comp_id
+_chem_comp_atom.atom_id
+_chem_comp_atom.alt_atom_id
+_chem_comp_atom.type_symbol
+_chem_comp_atom.charge
+_chem_comp_atom.pdbx_align
+_chem_comp_atom.pdbx_aromatic_flag
+_chem_comp_atom.pdbx_leaving_atom_flag
+_chem_comp_atom.pdbx_stereo_config
+_chem_comp_atom.pdbx_backbone_atom_flag
+_chem_comp_atom.pdbx_n_terminal_atom_flag
+_chem_comp_atom.pdbx_c_terminal_atom_flag
+_chem_comp_atom.model_Cartn_x
+_chem_comp_atom.model_Cartn_y
+_chem_comp_atom.model_Cartn_z
+_chem_comp_atom.pdbx_model_Cartn_x_ideal
+_chem_comp_atom.pdbx_model_Cartn_y_ideal
+_chem_comp_atom.pdbx_model_Cartn_z_ideal
+_chem_comp_atom.pdbx_component_atom_id
+_chem_comp_atom.pdbx_component_comp_id
+_chem_comp_atom.pdbx_ordinal
+ABC  C1G   C1G   C  0  1  N  N  R  N  N  N  43.632  43.406  35.099  -2.925   0.544   -7.189  C1G   ABC    1  
+ABC  C2G   C2G   C  0  1  N  N  R  N  N  N  45.122  43.223  35.324  -4.326   0.295   -6.628  C2G   ABC    2  
+#
+loop_
+_chem_comp_bond.comp_id
+_chem_comp_bond.atom_id_1
+_chem_comp_bond.atom_id_2
+_chem_comp_bond.value_order
+_chem_comp_bond.pdbx_aromatic_flag
+_chem_comp_bond.pdbx_stereo_config
+_chem_comp_bond.pdbx_ordinal
+ABC  C1G  C2G   SING  N  N    1  
+ABC  C1G  O5G   SING  N  N    2  
+#
+loop_
+_pdbx_chem_comp_descriptor.comp_id
+_pdbx_chem_comp_descriptor.type
+_pdbx_chem_comp_descriptor.program
+_pdbx_chem_comp_descriptor.program_version
+_pdbx_chem_comp_descriptor.descriptor
+ABC  SMILES            ACDLabs               10.04  O(C1C(O)C(O)C(O)OC1C)C6OC(C(OC5OC(C)C(NC4C=C(CO)C(OC3OC(CO)C(OC2OC(C)C(O)C(O)C2O)C(O)C3O)C(O)C4O)C(O)C5O)C(O)C6O)CO                                                                                                                                                                                                                                                                                                                                                 
+#
+loop_
+_pdbx_chem_comp_identifier.comp_id
+_pdbx_chem_comp_identifier.type
+_pdbx_chem_comp_identifier.program
+_pdbx_chem_comp_identifier.program_version
+_pdbx_chem_comp_identifier.identifier
+ABC  "SYSTEMATIC NAME"  ACDLabs               10.04  4,6-dideoxy-4-{[(1S,4R,5R,6S)-4-{[4-O-(6-deoxy-alpha-D-glucopyranosyl)-alpha-D-glucopyranosyl]oxy}-5,6-dihydroxy-3-(hydroxymethyl)cyclohex-2-en-1-yl]amino}-alpha-D-glucopyranosyl-(1->4)-alpha-D-glucopyranosyl-(1->4)-6-deoxy-beta-D-glucopyranose                                                                                                                              
+ABC  "SYSTEMATIC NAME"  "OpenEye OEToolkits"  1.5.0  (2R,3R,4S,5S,6R)-2-[(2R,3S,4R,5R,6S)-6-[[(1R,4S,5S,6R)-4-[[(2R,3S,4S,5R,6R)-6-[(2R,3S,4R,5R,6R)-4,5-dihydroxy-2-(hydroxymethyl)-6-[(2R,3S,4R,5R,6R)-4,5,6-trihydroxy-2-methyl-oxan-3-yl]oxy-oxan-3-yl]oxy-4,5-dihydroxy-2-methyl-oxan-3-yl]amino]-5,6-dihydroxy-2-(hydroxymethyl)-1-cyclohex-2-enyl]oxy]-4,5-dihydroxy-2-(hydroxymethyl)oxan-3-yl]oxy-6-methyl-oxane-3,4,5-triol  
+#
+loop_
+_pdbx_chem_comp_audit.comp_id
+_pdbx_chem_comp_audit.action_type
+_pdbx_chem_comp_audit.date
+_pdbx_chem_comp_audit.processing_site
+_pdbx_chem_comp_audit.annotator
+_pdbx_chem_comp_audit.details
+ABC  "Create component"   1999-07-08  RCSB  ?  ?  
+ABC  "Modify descriptor"  2011-06-04  RCSB  ?  ?  
+##
