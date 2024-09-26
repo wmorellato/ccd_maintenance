@@ -20,7 +20,6 @@ def get_site_config_db_url():
     dbname = "compv4_test"
     host = config.get("SITE_REFDATA_DB_HOST_NAME")
     port = config.get("SITE_REFDATA_DB_PORT_NUMBER")
-    socket = config.get("SITE_REFDATA_DB_SOCKET")
     user = config.get("SITE_REFDATA_DB_USER_NAME")
     password = config.get("SITE_REFDATA_DB_PASSWORD")
 

@@ -21,6 +21,9 @@ def lookup_ccd_fs(root_dir):
         if os.path.basename(root) in ("CVS", "REMOVED", "FULL"):
             continue
 
+        if "cif-parser-ascii" in os.path.basename(root):
+            continue
+
         for file in files:
             if file.endswith(".cif"):
                 yield os.path.join(root, file)
@@ -41,17 +44,18 @@ class ChemCompReader:
 
         for r in table:
             row = {}
-            for i in items:
-                if i not in sql_table.c:
-                    logger.debug(f"Ignoring item {i} in {category}")
+            for c in sql_table.c:
+                if c.name == "Component_ID" and self._cc_id:
+                    row[c.name] = self._cc_id
                     continue
 
-                if "Component_ID" in sql_table.c and self._cc_id:
-                    row["Component_ID"] = self._cc_id
+                if c.name not in items:
+                    row[c.name] = None
+                    continue
 
-                row[i] = cast_type(sql_table, i, cif.as_string(r[i]))
+                row[c.name] = cast_type(sql_table, c.name, cif.as_string(r[c.name]))
             rows.append(row)
-        
+
         return rows
 
     def read(self, file_path):
@@ -92,6 +96,7 @@ class DataLoader:
             with conn.begin():
                 metadata_obj.drop_all(conn)
                 metadata_obj.create_all(conn)
+                logger.info("Database schema created")
 
     def _read_data(self, cc_file):
         reader = ChemCompReader(config=self.config)
@@ -140,7 +145,7 @@ class DataLoader:
                 try:
                     self._load_multi(db_batch)
                 except Exception as e:
-                    logger.error(f"Error loading data for worker {worker}: {str(e)[:255]}")
+                    logger.error(f"Error loading data for worker {worker} from {cc_file}: {str(e)}")
                 finally:
                     db_batch.clear()
 
