@@ -16,8 +16,7 @@ logging.basicConfig(level=logging.INFO)
 
 def get_site_config_db_url():
     config = ConfigInfo()
-    # dbname = config.get("SITE_REFDATA_CC_DB_NAME")
-    dbname = "compv4_test"
+    dbname = config.get("SITE_REFDATA_CC_DB_NAME")
     host = config.get("SITE_REFDATA_DB_HOST_NAME")
     port = config.get("SITE_REFDATA_DB_PORT_NUMBER")
     user = config.get("SITE_REFDATA_DB_USER_NAME")
@@ -41,14 +40,25 @@ def cli():
 
 
 @click.command()
-@click.option('--db_url', default=None, help='Database URL')
-@click.option('--ccd_root', default=None, help='CCD root directory')
-def load(db_url, ccd_root):
+@click.option("--db_url", default=None, help="Database URL")
+@click.option("--ccd_root", default=None, help="CCD root directory")
+@click.option("--production", flag_value=True, help="Use production database")
+@click.option("--verbose", flag_value=True, help="Verbose output")
+def load(db_url, ccd_root, production, verbose):
     """Load data into the database."""
+    if not db_url and not production:
+        raise click.UsageError("Please provide a database URL or use the --production flag")
+
+    if verbose:
+        logging.basicConfig(logging.DEBUG)
+        logging.getLogger("ccd_maintenance.data_loader").setLevel(logging.DEBUG)
+
     if not db_url:
+        click.echo("Using production database")
         db_url = get_site_config_db_url()
 
     if not ccd_root:
+        click.echo("Using default CCD root directory")
         ccd_root = get_ccd_root()
 
     click.echo(f"Loading CCD data from {ccd_root} into {re.sub(r':.*@', ':****@', db_url)}")

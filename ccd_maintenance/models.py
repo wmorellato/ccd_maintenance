@@ -4,7 +4,6 @@ from sqlalchemy import MetaData, Table, Column, Integer, String, Float, Date, Da
 
 
 metadata_obj = MetaData()
-Column("Component_ID", String(10), primary_key=True),
 
 
 chem_comp = Table("chem_comp",
@@ -301,7 +300,6 @@ pdbx_chem_comp_synonyms = Table("pdbx_chem_comp_synonyms",
 
 def get_table(table_name):
     return metadata_obj.tables.get(table_name)
-    Column("Component_ID", String(10), primary_key=True),
 
 
 def cast_type(table_obj: Table, tag: str, value):

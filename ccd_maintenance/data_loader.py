@@ -10,7 +10,6 @@ from gemmi import cif
 from ccd_maintenance.models import get_table, cast_type, metadata_obj
 
 logger = logging.getLogger(__name__)
-logger.addHandler(logging.FileHandler("ccd_maintenance.log"))
 
 
 def lookup_ccd_fs(root_dir):
