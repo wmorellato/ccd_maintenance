@@ -21,10 +21,10 @@ def lookup_ccd_fs(root_dir):
         if os.path.basename(root) in ("CVS", "REMOVED", "FULL"):
             continue
 
-        if "cif-parser-ascii" in os.path.basename(root):
-            continue
-
         for file in files:
+            if "cif-parser-ascii" in file:
+                continue
+
             if file.endswith(".cif"):
                 yield os.path.join(root, file)
 
