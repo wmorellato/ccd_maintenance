@@ -1,6 +1,7 @@
 from datetime import datetime, date
+from datetime.parser import parse
 
-from sqlalchemy import Index, MetaData, Table, Column, Integer, String, Float, Date, DateTime, Boolean
+from sqlalchemy import MetaData, Table, Column, Integer, String, Float, Date, DateTime, Boolean
 
 
 metadata_obj = MetaData()
@@ -313,9 +314,10 @@ def cast_type(table_obj: Table, tag: str, value):
         return int(value)
 
     if isinstance(table_obj.c[tag].type, DateTime):
-        if len(value) == 10:
-            return datetime.strptime(value, "%Y-%m-%d")
-        return datetime.strptime(value, "%y-%m-%d")
+        try:
+            return parse(value)
+        except ValueError:
+            return value
 
     if isinstance(table_obj.c[tag].type, Date):
         return date.fromisoformat(value)
