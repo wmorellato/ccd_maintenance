@@ -1,5 +1,5 @@
-from datetime import datetime, date
-from datetime.parser import parse
+from cast_type.parser import parse
+from datetime import date
 
 from sqlalchemy import MetaData, Table, Column, Integer, String, Float, Date, DateTime, Boolean
 
