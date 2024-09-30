@@ -17,7 +17,7 @@ def lookup_ccd_fs(root_dir):
     Lookup the CCD files in the given directory and return the list of files.
     """
     for root, _, files in os.walk(root_dir):
-        if os.path.basename(root) in ("CVS", "REMOVED", "FULL"):
+        if "REMOVED" in root or "FULL" in root or "CVS" in root:
             continue
 
         for file in files:

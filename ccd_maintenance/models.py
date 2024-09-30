@@ -313,7 +313,9 @@ def cast_type(table_obj: Table, tag: str, value):
         return int(value)
 
     if isinstance(table_obj.c[tag].type, DateTime):
-        return datetime.strptime(value, "%Y-%m-%d")
+        if len(value) == 10:
+            return datetime.strptime(value, "%Y-%m-%d")
+        return datetime.strptime(value, "%y-%m-%d")
 
     if isinstance(table_obj.c[tag].type, Date):
         return date.fromisoformat(value)

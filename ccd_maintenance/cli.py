@@ -40,8 +40,8 @@ def cli():
 
 
 @click.command()
-@click.option("--db_url", default=None, help="Database URL")
-@click.option("--ccd_root", default=None, help="CCD root directory")
+@click.option("--db-url", default=None, help="Database URL")
+@click.option("--ccd-root", default=None, help="CCD root directory")
 @click.option("--production", flag_value=True, help="Use production database")
 @click.option("--verbose", flag_value=True, help="Verbose output")
 def load(db_url, ccd_root, production, verbose):
