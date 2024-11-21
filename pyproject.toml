@@ -10,7 +10,7 @@ click = "*"
 gemmi = "*"
 pytest = "*"
 SQLAlchemy = "*"
-wwpdb.utils.config = "*"
+"wwpdb.utils.config" = "*"
 PyMySQL = "*"
 
 [tool.poetry.dev-dependencies]
