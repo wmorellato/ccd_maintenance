@@ -6,11 +6,16 @@ authors = ["Weslley Morellato Bueno <wbueno@ebi.ac.uk>"]
 
 [tool.poetry.dependencies]
 python = "^3.8"
-sqlalchemy = "^1.4"
-pytest = "^6.0"
+click = "*"
+gemmi = "*"
+pytest = "*"
+SQLAlchemy = "*"
+wwpdb.utils.config = "*"
+PyMySQL = "*"
 
 [tool.poetry.dev-dependencies]
-pytest = "^6.0"
+pytest = "*"
+black = "*"
 
 [tool.poetry.scripts]
 ccd-tasks = "ccd_maintenance.cli:cli"
