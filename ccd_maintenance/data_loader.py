@@ -123,6 +123,16 @@ class DataLoader:
 
                     conn.execute(table.insert(), data)
 
+    def _report_failed(self, batch):
+        ccids = []
+
+        for entry in batch:
+            if isinstance(entry, dict) and "_chem_comp" in entry:
+                for row in entry["_chem_comp"]:
+                    ccids.append(row.get("Component_ID", "UNKNOWN"))
+
+        logger.error(f"Failed to load data for {ccids}")
+
     def _data_builder_task(self, worker, file_queue):
         db_batch = []
 
@@ -144,18 +154,32 @@ class DataLoader:
                 try:
                     self._load_multi(db_batch)
                 except Exception as e:
-                    logger.error(f"Error loading data for worker {worker} from {cc_file}: {str(e)}")
+                    self._report_failed(db_batch)
+                    logger.error(f"Error loading data for worker {worker}: {str(e)}")
                 finally:
                     db_batch.clear()
+
+        if db_batch:
+            logger.info(f"Loading remaining data for worker {worker}")
+
+            try:
+                self._load_multi(db_batch)
+            except Exception as e:
+                self._report_failed(db_batch)
+                logger.error(f"Error loading remaining data for worker {worker}: {str(e)}")
+            finally:
+                db_batch.clear()
 
     def load(self):
         file_queue = queue.Queue(maxsize=200)
         self._setup_schema()
 
+        count = 0
         with ThreadPoolExecutor(max_workers=self.config.num_threads) as executor:
             futures = [executor.submit(self._data_builder_task, worker, file_queue) for worker in range(self.config.num_threads)]
 
             for cc_file in lookup_ccd_fs(self.ccd_root):
+                count += 1
                 file_queue.put(cc_file)
 
             file_queue.join()
@@ -166,3 +190,5 @@ class DataLoader:
 
             for f in as_completed(futures):
                 f.result()
+
+        logger.info(f"Loaded {count} files into the database")

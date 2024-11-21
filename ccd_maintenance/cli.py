@@ -50,7 +50,7 @@ def load(db_url, ccd_root, production, verbose):
         raise click.UsageError("Please provide a database URL or use the --production flag")
 
     if verbose:
-        logging.basicConfig(logging.DEBUG)
+        logging.basicConfig(level=logging.DEBUG)
         logging.getLogger("ccd_maintenance.data_loader").setLevel(logging.DEBUG)
 
     if not db_url:
