@@ -121,7 +121,7 @@ class DataLoader:
                     if table is None:
                         continue
 
-                    conn.execute(table.insert(), data)
+                    conn.execute(table.insert(prefixes=["IGNORE"]), data)
 
     def _report_failed(self, batch):
         ccids = []

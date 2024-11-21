@@ -278,6 +278,23 @@ pdbx_chem_comp_import = Table("pdbx_chem_comp_import",
 )
 
 
+pdbx_chem_comp_pcm = Table("pdbx_chem_comp_pcm",
+    metadata_obj,
+    Column("pcm_id", Integer, primary_key=True),
+    Column("comp_id", String(10)),
+    Column("modified_residue_id", String(50), nullable=True),
+    Column("type", String(128)),
+    Column("category", String(128)),
+    Column("position", String(128)),
+    Column("polypeptide_position", String(128)),
+    Column("comp_id_linking_atom", String(6), nullable=True),
+    Column("modified_residue_id_linking_atom", String(6), nullable=True),
+    Column("uniprot_specific_ptm_accession", String(20), nullable=True),
+    Column("uniprot_generic_ptm_accession", String(20), nullable=True),
+    Column("first_instance_model_db_code", String(128), nullable=True)
+)
+
+
 pdbx_chem_comp_related = Table("pdbx_chem_comp_related",
     metadata_obj,
     Column("Component_ID", String(10), index=True, primary_key=True),
