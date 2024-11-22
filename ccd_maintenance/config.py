@@ -20,6 +20,7 @@ class Config:
             "_pdbx_chem_comp_atom_edit",
             "_pdbx_chem_comp_bond_edit",
             "_pdbx_chem_comp_audit",
+            "_pdbx_chem_comp_pcm",
             "_pdbx_chem_comp_related",
             "_pdbx_chem_comp_atom_related",
         ]
