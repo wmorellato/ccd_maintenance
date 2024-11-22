@@ -114,7 +114,7 @@ class DataLoader:
 
         with self.engine.connect() as conn:
             with conn.begin():
-                logger.info("Loading batch into the database")
+                logger.debug("Loading batch into the database")
 
                 for category, data in grouped_data.items():
                     table = get_table(category.lstrip("_"))
