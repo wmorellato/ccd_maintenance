@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "ccd_maintenance"
-version = "0.1.0"
+version = "0.1.1"
 description = "A module for loading CCD data into the database."
 authors = ["Weslley Morellato Bueno <wbueno@ebi.ac.uk>"]
 
